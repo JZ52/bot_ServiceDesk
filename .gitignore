@@ -1,0 +1,7 @@
+log_work.txt
+*.env
+check_chat_id.py
+*.json
+*.vbs
+*.bat
+version_actual.txt
