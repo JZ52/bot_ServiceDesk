@@ -94,11 +94,12 @@ async def process_requests():
             id_task = request["id"]
             title = request["subject"]
             requester = request["requester"]["name"]
+            link = f"http://192.168.11.13:8080/WorkOrder.do?woMode=viewWO&woID={ id_task }"
             message = (
                 f"🆕 <b>Новая заявка!</b>\n"
-                f"🔢 <b>Номер заявки:</b> {id_task}\n"
-                f"📌 <b>Тема:</b> {title}\n"
-                f"👤 <b>Написал:</b> {requester}"
+                f"🔢 <b>Номер заявки:</b> <a href = '{ link }'>{ id_task }</a>\n"
+                f"📌 <b>Тема:</b> { title }\n"
+                f"👤 <b>Написал:</b> { requester }"
             )
             await send_to_telegram(message, thread_id=THREAD_ID)
 
