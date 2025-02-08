@@ -6,12 +6,7 @@ import aioschedule
 import aiohttp
 import datetime
 import functools
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-from webdriver_manager.chrome import ChromeDriverManager
 from dotenv import load_dotenv
-from models import get_daily_summary
 
 load_dotenv('key.env')
 
@@ -20,9 +15,6 @@ API_KEY = os.getenv("API_KEY")
 API_URL = os.getenv("API_URL")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 THREAD_ID = os.getenv("THREAD_ID")
-MEDOC_URL = os.getenv("MEDOC_URL")
-VERSION_FILE = "version.txt"
-LOG_FILE = "medoc_log.txt"
 
 PROCESSED_IDS_FILE = "processed_ids.json"
 
@@ -55,20 +47,6 @@ async def send_to_telegram(message, thread_id=None):
         async with session.post(url, json=payload) as response:
             if response.status != 200:
                 print(f"Ошибка отправки: {await response.text()}")
-
-
-# Сводка за день
-async def send_summary():
-    summary = get_daily_summary()
-    if not summary:
-        return
-
-    message = "Сводка за сегодня: \n"
-    for user_name, count in summary:
-        message += f"{user_name}: {count} сообщений\n"
-
-    await send_to_telegram(message, thread_id=THREAD_ID)
-
 
 # Получение новых заявок из ManageEngine
 def fetch_requests():
@@ -106,63 +84,15 @@ async def process_requests():
         save_processed_ids(processed_ids)
         await asyncio.sleep(60)
 
-
-# Проверка обновлений M.E.Doc
-async def check_medoc_updates():
-    service = Service(ChromeDriverManager().install())
-    driver = webdriver.Chrome(service=service)
-    try:
-        driver.get(MEDOC_URL)
-        version_new = driver.find_element(By.CLASS_NAME, "js-update-num").text
-        if os.path.exists(VERSION_FILE):
-            with open(VERSION_FILE, "r") as file:
-                version_actual = file.read().strip()
-        else:
-            version_actual = ""
-        if version_new != version_actual:
-            with open(VERSION_FILE, "w") as file:
-                file.write(version_new)
-            message = (
-                f"\U0001F195Вышла новая версия M.E.Doс: <b>{version_new}</b>.\n"
-                f"Обновите, пожалуйста!"
-            )
-            await send_to_telegram(message, thread_id=THREAD_ID)
-            print(version_new)
-        else:
-            with open(LOG_FILE, "a") as log_file:
-                log_file.write(f"{datetime.datetime.now()} - Версия актуальна: {version_actual}\n")
-    except Exception as e:
-        print("Ошибка при проверке обновлений M.E.Doc:", e)
-    finally:
-        driver.quit()
-
-# Обёртки для асинхронных функций
-def schedule_send_summary():
-    asyncio.create_task(send_summary())
-
-def schedule_check_medoc_updates():
-    asyncio.create_task(check_medoc_updates())
-
-# Планировщик
-async def scheduler():
-
-    aioschedule.every().day.at("00:18").do(schedule_send_summary)
-    aioschedule.every().day.at("10:00").do(schedule_check_medoc_updates)
-
     while True:
         await aioschedule.run_pending()
         await asyncio.sleep(1)
-
-    while True:
-        await aioschedule.run_pending()
-        await asyncio.sleep(60)
 
 
 # Основной цикл
 async def main():
     await asyncio.gather(
         process_requests(),
-        #scheduler()
     )
 
 
