@@ -1,6 +1,3 @@
 requests
-asyncio
-selenium
-webdriver-manager
-aiogram
-aioschedule
+aiohttp
+python-dotenv

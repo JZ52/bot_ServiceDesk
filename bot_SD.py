@@ -2,10 +2,7 @@ import requests
 import asyncio
 import json
 import os
-import aioschedule
 import aiohttp
-import datetime
-import functools
 from dotenv import load_dotenv
 
 load_dotenv('key.env')
@@ -82,11 +79,6 @@ async def process_requests():
 
         save_processed_ids(processed_ids)
         await asyncio.sleep(60)
-
-    while True:
-        await aioschedule.run_pending()
-        await asyncio.sleep(1)
-
 
 # Основной цикл
 async def main():
