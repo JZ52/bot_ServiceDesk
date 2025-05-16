@@ -1,3 +1,7 @@
+include
+Lib
+Scripts
+
 log_work.txt
 *.env
 *.json
@@ -7,6 +11,4 @@ version_actual.txt
 chek_chat_id.py
 pyvenv.cfg
 __pycache__
-include
-Lib
-Scripts
+
