@@ -1,7 +1,7 @@
 import requests
 import json
 
-TELEGRAM_BOT_TOKEN = "7864178043:AAGW_hiemdK_ED3G9yjXHaRoh9oHseFTE4A"
+TELEGRAM_BOT_TOKEN = ""
 
 def get_chat_id():
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/getUpdates"
