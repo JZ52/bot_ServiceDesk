@@ -3,3 +3,4 @@ asyncio
 selenium
 webdriver-manager
 aiogram
+aioschedule

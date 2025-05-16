@@ -5,3 +5,8 @@ log_work.txt
 *.bat
 version_actual.txt
 chek_chat_id.py
+pyvenv.cfg
+__pycache__
+include
+Lib
+Scripts

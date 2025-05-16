@@ -63,7 +63,6 @@ def fetch_requests():
         return new_requests
     return []
 
-
 # Обработка заявок
 async def process_requests():
     while True:
@@ -94,7 +93,6 @@ async def main():
     await asyncio.gather(
         process_requests(),
     )
-
 
 if __name__ == "__main__":
     asyncio.run(main())
